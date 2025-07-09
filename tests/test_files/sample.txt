@@ -1,0 +1,42 @@
+Questo è un file di testo esteso generato per testare l'elaborazione di documenti di grandi dimensioni. Il contenuto include parole casuali, strutture complesse e caratteri speciali per simulare un caso d'uso reale.
+
+---
+
+**Sezione 1: Introduzione**  
+I file di testo sono utilizzati in molte applicazioni, dal machine learning all'archiviazione di dati grezzi. Questo esempio contiene:  
+- Paragrafi con lunghezze variabili.  
+- Simboli come @, #, %, &, *, è, ù, ñ.  
+- Numeri casuali: 42, 3.14, 1001.  
+- URL fittizi: https://esempio.com, http://test.ai/page?query=string.  
+
+**Sezione 2: Testo generato casualmente**  
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.  
+
+Curabitur auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Vivamus auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.  
+
+**Sezione 3: Dati strutturati**  
+| ID  | Nome       | Descrizione               |  
+|-----|------------|---------------------------|  
+| 1   | Progetto A | Sviluppo interfaccia UX   |  
+| 2   | Progetto B | Analisi dati climatici    |  
+
+**Sezione 4: Codice di esempio**  
+def hello_world():  
+    print("Ciao, mondo!")  
+
+if __name__ == "__main__":  
+    hello_world()  
+
+**Sezione 5: Testo ripetitivo per test**  
+La ripetizione aiuta a verificare l'analisi di frequenza.  
+La ripetizione aiuta a verificare l'analisi di frequenza.  
+La ripetizione aiuta a verificare l'analisi di frequenza.  
+
+---  
+
+**Caratteri speciali/stress test:**  
+¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ  
+
+---  
+
+**Fine del file.**  

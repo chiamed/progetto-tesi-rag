@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-dotenv
+openai
+langchain
+pymilvus>=2.4.0
+PyMuPDF
+python-docx
+Office365-REST-Python-Client
+sentence-transformers>=2.2.0
+numpy
