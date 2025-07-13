@@ -14,8 +14,7 @@ Un sistema di Retrieval-Augmented Generation che indicizza documenti da SharePoi
 
 ### 🔁 1. Clona il progetto
 ```bash
-git clone https://github.com/tuo-username/progetto-pubblico.git
-cd progetto-pubblico
+git clone https://github.com/chiamed/progetto-tesi-rag
 ```
 
 ### 🐳 2. Esecucuzione con Docker
@@ -30,7 +29,7 @@ uvicorn app.main:app --reload
 
 ### 💻 4. Interfaccia utente
 ```bash
-uvicorn app.main:app --reload
+streamlit run chatbot/chatbot.py
 ```
 
 ## ✨ **Credits**
