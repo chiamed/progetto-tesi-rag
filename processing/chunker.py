@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 
 
@@ -7,16 +6,16 @@ class Chunker(BaseModel):
     Class used to split text into chunks.
     """
 
-    # overlap = numero di parole sovrapposte tra chunk consecutivi, utili per mantenere il contesto
+    # overlap = number of overlapping words between consecutive chunks, useful for maintaining context
     def split_text_into_chunks(self, text: str, max_words: int = 200, overlap: int = 20) -> list[str]:
         """
-        Divide il testo estratto in chunk più piccoli per l'elaborazione nel RAG
+        Splits the extracted text into smaller chunks for processing in RAG
         """
-        words = text.split() # Dividi il testo in parole singole
+        words = text.split() # Split the text into individual words
         chunks = []
 
         for i in range(0, len(words), max_words - overlap):
             chunk = words[i:i + max_words]
-            chunks.append(" ".join(chunk)) # unisce le parole del chunk in una stringa
+            chunks.append(" ".join(chunk)) # Joins the words of the chunk into a string
 
         return chunks

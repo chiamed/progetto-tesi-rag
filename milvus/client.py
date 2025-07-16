@@ -1,52 +1,55 @@
 from pymilvus import MilvusClient
 import os
-from milvus.schema import COLLECTION_NAME, EMBEDDING_DIM
+from milvus.schema import COLLECTION_NAME, GEMINI_EMBEDDING_DIM, OPENAI_EMBEDDING_DIM
 from milvus.utils import prepare_milvus_data
 
 MILVUS_URI = os.getenv("MILVUS_URI")
 
 class MilvusHandler:
-    def __init__(self):
+    def __init__(self, model_name: str = "openai"):
         self.client = MilvusClient(uri=MILVUS_URI)
         self.collection_name = COLLECTION_NAME
+        if model_name.lower() == "openai":
+            self.embedding_dim = OPENAI_EMBEDDING_DIM
+        elif model_name.lower() == "gemini":
+            self.embedding_dim = GEMINI_EMBEDDING_DIM
+        else:
+            raise ValueError(f"Modello embedding non supportato: {model_name}")
 
     def create_collection(self):
         if self.client.has_collection(self.collection_name):
-            print(f"Collezione '{self.collection_name}' già esistente")
             return
         self.client.create_collection(
             collection_name=self.collection_name,
-            dimension=EMBEDDING_DIM,
+            dimension=self.embedding_dim,
             metric_type="IP",  # inner product
             consistency_level="Strong",
         )
-        print(f"Collezione '{self.collection_name}' creata")
 
     def reset_collection(self):
-        """Utile in fase di sviluppo per pulire tutto"""
+        """Useful during development to clear everything"""
         if self.client.has_collection(self.collection_name):
             self.client.drop_collection(self.collection_name)
-            print(f"Collezione '{self.collection_name}' eliminata")
         self.create_collection()
 
     def insert_embeddings(self, chunks: list[str], embeddings: list, source: str = "manual"):
         """
-        Inserisce i chunk e i loro embedding nella collezione Milvus
+        Inserts chunks and their embeddings into the Milvus collection
 
-        :param chunks: lista di stringhe testuali
-        :param embeddings: lista di vettori (np.ndarray o list[float])
-        :param source: da dove proviene il documento (es. SharePoint, nome file...)
+        :param chunks: list of textual strings
+        :param embeddings: list of vectors (np.ndarray or list[float])
+        :param source: source of the document (e.g., SharePoint, file name...)
         """
         data = prepare_milvus_data(chunks, embeddings, source)
         self.client.insert(self.collection_name, data=data)
-        print(f"Inseriti {len(data)} chunk nella collezione")
+        print(f"Inserted {len(data)} chunks into the collection")
 
     def search(self, query_vector: list[float], top_k: int = 3) -> list[str]:
         """
-        Cerca i chunk più simili a un vettore di embedding
+        Searches for the chunks most similar to an embedding vector
 
-        :param query_vector: embedding della query
-        :return: lista di stringhe (i testi ritrovati)
+        :param query_vector: embedding of the query
+        :return: list of strings (retrieved texts)
         """
         results = self.client.search(
             collection_name=self.collection_name,

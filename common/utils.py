@@ -4,8 +4,6 @@ from retriever.indexer import Indexer
 from sharepoint.downloader import SharePointDownloader
 from retriever.cache import CacheManager
 
-
-
 class Setupper(BaseModel):
     """
     Class used to perform setup operations.
@@ -18,11 +16,11 @@ class Setupper(BaseModel):
     model: str = "openai"  # Default model is OpenAI
 
     @classmethod
-    def from_env(cls, model: str = "gemini"): # cambia per usare gemini
+    def from_env(cls, model: str = "openai"): # cambia per usare gemini
         """
         Create an instance of Setupper using environment variables.
         """
-        milvus = MilvusHandler()
+        milvus = MilvusHandler(model_name=model)
         indexer = Indexer()
 
         return cls(milvus=milvus, indexer=indexer, model=model)
@@ -34,7 +32,7 @@ class Setupper(BaseModel):
         print("Downloading from SharePoint and indexing...")
         try:
             sp = SharePointDownloader.from_env()
-            # sp.download_all_files()
+            sp.download_all_files()
         except Exception as e:
             print(f"Error downloading from SharePoint: {e}")
             return
@@ -55,7 +53,7 @@ class Setupper(BaseModel):
         """
         Perform setup operations such as creating Milvus collection and indexing documents.
         """
-        self.milvus.reset_collection()
+        #self.milvus.reset_collection()
         self.milvus.create_collection()
         print("Milvus collection created.")
 

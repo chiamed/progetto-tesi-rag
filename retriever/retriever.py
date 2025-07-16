@@ -1,5 +1,5 @@
 from embeddings.openai_embedder import OpenAIEmbedder
-from embeddings.gemini_embedder import GeminiEmbedder  # Assicurati di importare GeminiEmbedder
+from embeddings.gemini_embedder import GeminiEmbedder 
 from milvus.client import MilvusHandler
 
 class Retriever:
@@ -9,27 +9,27 @@ class Retriever:
         elif embedder_model == "gemini":
             self.embedder = GeminiEmbedder()
         else:
-            raise ValueError(f"Tipo di embedder non supportato: {embedder_model}")
+            raise ValueError(f"Unsupported embedder type: {embedder_model}")
         
         self.milvus = MilvusHandler()
         self.top_k = top_k
 
     def retrieve(self, query: str) -> list[str]:
         """
-        Esegue una ricerca semantica in Milvus a partire da una query testuale
+        Performs semantic search in Milvus based on a textual query
 
-        :param query: stringa con la domanda dell'utente
-        :return: lista di chunk di testo rilevanti
+        :param query: string containing the user's question
+        :return: list of relevant text chunks
         """
         if not query:
-            raise ValueError("La query non può essere vuota")
+            raise ValueError("The query cannot be empty")
 
-        # 1. Embedding della query
-        print("Generazione embedding della query...")
+        # 1. Embedding the query
+        print("Generating query embedding...")
         query_vector = self.embedder.embed_chunks([query])[0]
 
-        # 2. Ricerca in Milvus
-        print("Esecuzione ricerca semantica...")
+        # 2. Semantic search in Milvus
+        print("Performing semantic search...")
         results = self.milvus.search(query_vector.tolist(), top_k=self.top_k)
 
         return results

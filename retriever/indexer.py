@@ -25,17 +25,17 @@ class Indexer(BaseModel):
 
         path = Path(file_path)
         if not path.exists():
-            print(f"File non trovato: {file_path}")
+            print(f"File not found: {file_path}")
             return
 
         if path.suffix in SUPPORTED_EXTENSIONS:
             text = parser.extract_text(file_path)
         else:
-            print(f"Tipo file non supportato: {path.suffix}")
+            print(f"Unsupported file type: {path.suffix}")
             return
 
         if not text.strip():
-            print(f"Nessun contenuto utile trovato in {file_path}")
+            print(f"No useful content found in {file_path}")
             return
 
         if (model == "openai"):
@@ -46,9 +46,8 @@ class Indexer(BaseModel):
         chunks = chunker.split_text_into_chunks(text)
         
         embeddings = embedder.embed_chunks(chunks)
-
         milvus = MilvusHandler()
         milvus.insert_embeddings(chunks, embeddings, source=source_name or path.name)
 
-        print(f"Indicizzato {file_path} ({len(chunks)} chunk)")
+        print(f"Indexed {file_path} ({len(chunks)} chunks)")
         return True

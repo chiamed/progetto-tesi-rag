@@ -37,9 +37,9 @@ class SharePointDownloader(BaseModel):
         site_path = os.getenv("SHAREPOINT_SITE_PATH")
         if not site_path:
             raise ValueError("SHAREPOINT_SITE_PATH environment variable is not set.")
-        src_folder = os.getenv("SHAREPOINT_SRC_FOLDER", "")
+        src_folder = os.getenv("SHAREPOINT_SRC_PATH", "")
         if not src_folder:
-            raise ValueError("SHAREPOINT_SRC_FOLDER environment variable is not set.")
+            raise ValueError("SHAREPOINT_SRC_PATH environment variable is not set.")
         dest_folder = os.getenv("SHAREPOINT_DEST_FOLDER")
         if not dest_folder:
             raise ValueError("SHAREPOINT_DEST_FOLDER environment variable is not set.")
@@ -52,7 +52,7 @@ class SharePointDownloader(BaseModel):
             site_path=site_path,
             src_folder=src_folder,
             dest_folder=pathlib.Path(dest_folder),
-            graph_root="https://graph.microsoft.com/"
+            graph_root="https://graph.microsoft.com"
         )
     
     def get_access_token(self):
@@ -77,21 +77,6 @@ class SharePointDownloader(BaseModel):
         resp.raise_for_status()
         return resp.json()
     
-    def list_all_files(self, drive_id: str, folder_id: str, token: str) -> list[dict]:
-    # Ricorsivamente lista tutti i file sotto la cartella identificata da folder_id
-        items = []
-        url = f"{self.graph_root}/v1.0/drives/{drive_id}/items/{folder_id}/children"
-        while url:
-            response = self.graph_get(url, token)
-            for item in response.get("value", []):
-                if "folder" in item:
-                    # è una cartella, ricorsione
-                    items.extend(self.list_all_files(drive_id, item["id"], token))
-                elif "file" in item:
-                    items.append(item)
-            url = response.get("@odata.nextLink")
-        return items
-    
     def download_file(self, item: dict, filename: pathlib.Path):
             download_url = item.get("@microsoft.graph.downloadUrl")
             if download_url:
@@ -114,20 +99,22 @@ class SharePointDownloader(BaseModel):
         site = self.graph_get(f"{self.graph_root}/v1.0/sites/{self.site_host}:{self.site_path}", token)
         site_id = site["id"]
 
-        drives = self.graph_get(f"{self.graph_root}/v1.0/sites/{site_id}/drives", token)
-        drive_id = next((d["id"] for d in drives["value"] if d["name"] == "Documents"), None)
-        if not drive_id:
-            raise RuntimeError("Drive 'Documents' non trovato.")
+        drive = self.graph_get(f"{self.graph_root}/v1.0/sites/{site_id}/drive", token)
+        drive_id = drive["id"]
 
         target_url = f"{self.graph_root}/v1.0/drives/{drive_id}/root:/{self.src_folder}"
-        target = self.graph_get(target_url, token, select="id,name")
-        
-        # Lista ricorsiva di tutti i file nella cartella e sottocartelle
-        items = self.list_all_files(drive_id, target["id"], token)
-        
-        print(f"Trovati {len(items)} elementi")
-        for itm in items:
-            print(f" - {itm['name']} (file: {'file' in itm}, folder: {'folder' in itm})")
+        target = self.graph_get(target_url, token, select="id,name,@microsoft.graph.downloadUrl", expand="children")
+
+        items = []
+        if "folder" in target:
+            # paginazione automatica (API restituisce @odata.nextLink se necessario)
+            next_url = f"{self.graph_root}/v1.0/drives/{drive_id}/root:/{self.src_folder}:/children"
+            while next_url:
+                batch = self.graph_get(next_url, token)
+                items.extend(batch["value"])
+                next_url = batch.get("@odata.nextLink")
+        else:
+            items.append(target)
         
         self.dest_folder.mkdir(exist_ok=True)
         for itm in items:
@@ -136,4 +123,4 @@ class SharePointDownloader(BaseModel):
             local_path = self.dest_folder / itm["name"]
             self.download_file(itm, local_path)
 
-        print(f"\nDownload completato in '{self.dest_folder.resolve()}'")
+        print(f"\n✅ Download completato in '{self.dest_folder.resolve()}'")

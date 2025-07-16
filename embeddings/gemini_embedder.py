@@ -8,14 +8,12 @@ class GeminiEmbedder():
         self.model_name = model_name
         self.api_key = os.getenv("GOOGLE_API_KEY")
         if not self.api_key:
-            raise EnvironmentError("GOOGLE_API_KEY non trovato nelle variabili d'ambiente")
-        
-        # Non serve più configurare manualmente
-        print(f"Modello Gemini per embedding: {self.model_name}")
+            raise EnvironmentError("GOOGLE_API_KEY not found in environment variables")
+        print(f"Gemini model for embedding: {self.model_name}")
 
     def embed_chunks(self, chunks: List[str]) -> List[np.ndarray]:
         """
-        Genera embedding per una lista di chunk di testo usando Google Gemini
+        Generates embeddings for a list of text chunks using Google Gemini
         """
         if not chunks:
             return []

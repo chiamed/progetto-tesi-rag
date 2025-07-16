@@ -14,15 +14,15 @@ def generate_answer_openai(query: str, context_chunks: list[str]) -> str:
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": USER_PROMPT}
             ],
-            temperature=1, # livello di creatività della risposta
-            max_completion_tokens=500 # numero massimo di "parole spezzate" nella risposta
-            # 1 parola = 1.3-1.5 token ca; 500 token = 350-400 parole ca
+            temperature=1, # level of creativity in the response
+            max_completion_tokens=500 # nmax number of tokens in the response
+            # 1 word = ~1.3-1.5 token, 500 tokens = ~300-400 words
         )
 
         if response.choices and response.choices[0].message and response.choices[0].message.content:
             return response.choices[0].message.content.strip()
         else:
-            return "Nessuna risposta ricevuta dal modello."
+            return "No response received from the model."
     except Exception as e:
-        return f"Errore durante la generazione della risposta: {e}"
+        return f"Error while generating the response: {e}"
 

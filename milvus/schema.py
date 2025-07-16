@@ -1,13 +1,14 @@
 import os
 
-# Usa le variabili d'ambiente se presenti, altrimenti fallback
+# Use environment variables if present, otherwise fallback
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "project_docs")
 
-# 1536 per OpenAI text-embedding-3-small / 384 per MiniLM
-EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "1536"))
+# 1536 for OpenAI / 768 for Gemini
+OPENAI_EMBEDDING_DIM = int(os.getenv("OPENAI_EMBEDDING_DIM", "1536"))
+GEMINI_EMBEDDING_DIM = int(os.getenv("GEMINI_EMBEDDING_DIM", "768"))
 
-# Metrica per la similarità (IP = Inner Product)
+# Metric for similarity (IP = Inner Product)
 METRIC_TYPE = "IP"
 
-# Livello di consistenza
+# Consistency level
 CONSISTENCY_LEVEL = "Strong"

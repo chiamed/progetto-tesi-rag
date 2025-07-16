@@ -7,33 +7,34 @@ class OpenAIEmbedder():
     def __init__(self, model_name: str = "text-embedding-3-small"):
         self.model_name = model_name
         self.client = self._initialize_client()
-        print(f"Modello OpenAI per embedding: {model_name}")
+        print(f"OpenAI model for embeddings: {model_name}")
 
     def _initialize_client(self):
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
-            raise EnvironmentError("OPENAI_API_KEY non trovato nelle variabili d'ambiente")
+            raise EnvironmentError("OPENAI_API_KEY not found in environment variables")
         return OpenAI(api_key=api_key)
 
     def embed_chunks(self, chunks: List[str]) -> List[np.ndarray]:
         """
-        Genera embedding per una lista di chunk di testo usando OpenAI
+        Generates embeddings for a list of text chunks using OpenAI
 
-        Argomenti:
-            chunks: Lista di stringhe da convertire in embedding
+        Args:
+            chunks: List of strings to convert into embeddings
 
-        Output:
-            Lista di numpy array contenenti gli embedding
+        Returns:
+            List of numpy arrays containing the embeddings
         """
         if not isinstance(chunks, list):
-            raise ValueError("Input deve essere una lista di stringhe")
+            raise ValueError("Input must be a list of strings")
 
         if not chunks:
             return []
 
         response = self.client.embeddings.create(
             input=chunks,
-            model=self.model_name
+            model=self.model_name,
+            #dimensions=768
         )
 
         embeddings = [np.array(res.embedding) for res in response.data]

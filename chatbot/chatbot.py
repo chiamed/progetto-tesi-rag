@@ -3,8 +3,8 @@ import streamlit as st
 import time
 
 # Streamed response emulator
-def response_generator(input: str = ""): # cambia provider in "gemini" se vuoi usare Gemini per generazione risposte
-    # Prepara il corpo della richiesta
+def response_generator(input: str = ""): # Change provider to "gemini" if you want to use Gemini for response generation
+    # Prepare the request payload
     payload = {
         "prompt": input
     }
@@ -13,17 +13,17 @@ def response_generator(input: str = ""): # cambia provider in "gemini" se vuoi u
         response = requests.post("http://localhost:8000/query", json=payload)
         response.raise_for_status()
         data = response.json()
-        answer = data.get("answer", "Nessuna risposta ricevuta.")
+        answer = data.get("answer", "No response received.")
     except Exception as e:
-        answer = f"Errore durante la richiesta: {e}"
+        answer = f"Error during the request: {e}"
 
-    # Generazione risposta a parole
+    # Generate response word by word
     for word in answer.split():
         yield word + " "
         time.sleep(0.05)
 
 
-st.title("Esplora i documenti aziendali con RAG")
+st.title("Explore company documents with RAG")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -47,4 +47,3 @@ if prompt := st.chat_input("What is up?"):
         response = st.write_stream(response_generator(prompt))
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
- 

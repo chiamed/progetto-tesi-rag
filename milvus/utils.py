@@ -3,15 +3,15 @@ import numpy as np
 
 def prepare_milvus_data(chunks: List[str], embeddings: List[np.ndarray], source: str) -> List[dict]:
     """
-    Prepara i dati da inserire in Milvus con id, vector, metadata
+    Prepare data to insert into Milvus with id, vector, metadata
 
-    :param chunks: lista di stringhe
-    :param embeddings: lista di np.ndarray
-    :param source: nome file o fonte documento
-    :return: lista di dict compatibili con Milvus
+    :param chunks: list of strings
+    :param embeddings: list of np.ndarray
+    :param source: file name or document source
+    :return: list of dict compatible with Milvus
     """
     if len(chunks) != len(embeddings):
-        raise ValueError("Chunks ed embeddings devono avere la stessa lunghezza")
+        raise ValueError("Chunks and embeddings must have the same length")
 
     data = []
     for i, (chunk, vector) in enumerate(zip(chunks, embeddings)):

@@ -8,4 +8,4 @@ def get_llm(provider: str):
     elif provider == "gemini":
         return generate_answer_gemini
     else:
-        raise ValueError(f"Provider LLM non supportato: {provider}")
+        raise ValueError(f"Unsupported LLM provider: {provider}")
